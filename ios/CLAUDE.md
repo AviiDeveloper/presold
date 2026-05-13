@@ -61,9 +61,21 @@ Before any work in this directory, also read:
 
 ## What NOT to do in iOS code
 
-- Don't add WKWebView automation for cross-listing (v2, see ADR 001)
-- Don't store user credentials for Vinted/Depop/eBay
-- Don't call Anthropic or eBay APIs directly from the app
+- Don't store user credentials for Vinted/Depop/eBay. WKWebView holds
+  the user's own login session; we never see passwords or tokens.
+- Don't auto-submit listings without an explicit user tap inside the
+  embedded WebView. Per ADR-007 App Store positioning, the user must
+  always be the one to hit "Post."
+- Don't call Anthropic or eBay APIs directly from the app — proxy
+  through Supabase edge functions
 - Don't use Combine — async/await throughout
 - Don't add a routing library — NavigationStack is enough for v1
 - Don't add a state management library — `@Observable` is enough for v1
+
+## Cross-listing notes (ADR-007)
+
+Cross-listing is in v1 (eBay native API + Vinted/Depop via WKWebView).
+- eBay: OAuth flow via Supabase edge function, Sell Inventory API
+- Vinted / Depop: WKWebView with JS form-fill, photo upload via JS bridge
+  from `PHPickerViewController`. Per-platform automation modules live in
+  `Services/CrossListing/`.
