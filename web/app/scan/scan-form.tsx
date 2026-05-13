@@ -187,20 +187,39 @@ function ScanResultView({
   onReset: () => void;
 }) {
   const { item, guidance, comp_count, photo_url } = result;
+  const couldntIdentify =
+    item.confidence === 0 || (item.title === null && item.category === null);
+
+  if (couldntIdentify) {
+    return (
+      <NoIdentifyView
+        photoUrl={photo_url}
+        reasoning={guidance.reasoning}
+        onReset={onReset}
+      />
+    );
+  }
+
+  const hasPrices =
+    guidance.price_low !== null &&
+    guidance.price_recommended !== null &&
+    guidance.price_high !== null;
+
   return (
     <div className="flex flex-col gap-8">
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="overflow-hidden rounded-md border border-(--color-border)">
-          {/* Public Supabase storage URL */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={photo_url}
-            alt={item.title}
+            alt={item.title ?? "Scanned item"}
             className="block max-h-80 w-full object-contain"
           />
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold tracking-tight">{item.title}</h2>
+          <h2 className="text-xl font-semibold tracking-tight">
+            {item.title ?? "Unnamed item"}
+          </h2>
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
             {item.brand && (
               <>
@@ -208,18 +227,30 @@ function ScanResultView({
                 <dd>{item.brand}</dd>
               </>
             )}
-            <dt className="text-(--color-muted-foreground)">Category</dt>
-            <dd>{item.category}</dd>
+            {item.category && (
+              <>
+                <dt className="text-(--color-muted-foreground)">Category</dt>
+                <dd>{item.category}</dd>
+              </>
+            )}
             {item.size && (
               <>
                 <dt className="text-(--color-muted-foreground)">Size</dt>
                 <dd>{item.size}</dd>
               </>
             )}
-            <dt className="text-(--color-muted-foreground)">Colour</dt>
-            <dd>{item.color}</dd>
-            <dt className="text-(--color-muted-foreground)">Condition</dt>
-            <dd>{item.condition.replace(/_/g, " ")}</dd>
+            {item.color && (
+              <>
+                <dt className="text-(--color-muted-foreground)">Colour</dt>
+                <dd>{item.color}</dd>
+              </>
+            )}
+            {item.condition && (
+              <>
+                <dt className="text-(--color-muted-foreground)">Condition</dt>
+                <dd>{item.condition.replace(/_/g, " ")}</dd>
+              </>
+            )}
           </dl>
           <p className="mt-2 text-xs text-(--color-muted-foreground)">
             AI confidence: {Math.round(item.confidence * 100)}%
@@ -232,23 +263,29 @@ function ScanResultView({
           Price guidance · {comp_count} sold comp
           {comp_count === 1 ? "" : "s"}
         </p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <PriceTile
-            label="Quick sale"
-            price={guidance.price_low}
-            tone="muted"
-          />
-          <PriceTile
-            label="Recommended"
-            price={guidance.price_recommended}
-            tone="accent"
-          />
-          <PriceTile
-            label="Patient seller"
-            price={guidance.price_high}
-            tone="muted"
-          />
-        </div>
+        {hasPrices ? (
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+            <PriceTile
+              label="Quick sale"
+              price={guidance.price_low!}
+              tone="muted"
+            />
+            <PriceTile
+              label="Recommended"
+              price={guidance.price_recommended!}
+              tone="accent"
+            />
+            <PriceTile
+              label="Patient seller"
+              price={guidance.price_high!}
+              tone="muted"
+            />
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-(--color-muted-foreground)">
+            Not enough sold comps to give a price range yet.
+          </p>
+        )}
         <p className="mt-5 text-sm">{guidance.reasoning}</p>
         <p className="mt-2 text-xs text-(--color-muted-foreground)">
           Estimated sell speed: {guidance.sell_speed_estimate} · AI confidence:{" "}
@@ -262,6 +299,50 @@ function ScanResultView({
         className="self-start rounded-md border border-(--color-border) px-5 py-3 text-sm font-medium transition hover:bg-(--color-muted)"
       >
         Scan another
+      </button>
+    </div>
+  );
+}
+
+function NoIdentifyView({
+  photoUrl,
+  reasoning,
+  onReset,
+}: {
+  photoUrl: string;
+  reasoning: string;
+  onReset: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="overflow-hidden rounded-md border border-(--color-border)">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={photoUrl}
+          alt="Uploaded photo"
+          className="block max-h-80 w-full object-contain"
+        />
+      </div>
+      <div className="rounded-md border border-(--color-border) p-6">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Couldn&apos;t identify the item
+        </h2>
+        <p className="mt-3 text-sm text-(--color-muted-foreground)">
+          {reasoning ||
+            "The photo didn't show enough to identify a sellable item."}
+        </p>
+        <ul className="mt-4 list-disc pl-5 text-sm text-(--color-muted-foreground)">
+          <li>Use a clearer, well-lit photo</li>
+          <li>Show the front of the item against a plain background</li>
+          <li>Include a brand label or tag if visible</li>
+        </ul>
+      </div>
+      <button
+        type="button"
+        onClick={onReset}
+        className="self-start rounded-md border border-(--color-border) px-5 py-3 text-sm font-medium transition hover:bg-(--color-muted)"
+      >
+        Try another photo
       </button>
     </div>
   );

@@ -13,26 +13,34 @@ export type ItemCondition =
   | "good"
   | "satisfactory";
 
-/** Output of Prompt 1 (identify-item). See `docs/ai-prompts.md`. */
+/**
+ * Output of Prompt 1 (identify-item). See `docs/ai-prompts.md`.
+ * Every identifiable field is nullable — Haiku returns nulls and
+ * `confidence: 0` when the photo doesn't contain an identifiable item.
+ * The UI short-circuits to an empty-state in that case.
+ */
 export type Item = {
-  title: string;
-  description: string;
+  title: string | null;
+  description: string | null;
   brand: string | null;
-  category: string;
+  category: string | null;
   size: string | null;
-  color: string;
-  condition: ItemCondition;
-  weight_grams_estimate: number;
+  color: string | null;
+  condition: ItemCondition | null;
+  weight_grams_estimate: number | null;
   confidence: number;
 };
 
 export type SellSpeed = "fast" | "medium" | "slow" | "uncertain";
 
-/** Output of Prompt 3 (price guidance). See `docs/ai-prompts.md`. */
+/**
+ * Output of Prompt 3 (price guidance). See `docs/ai-prompts.md`.
+ * Prices are nullable for the "no identifiable item" + sparse-comps case.
+ */
 export type PriceGuidance = {
-  price_low: number;
-  price_recommended: number;
-  price_high: number;
+  price_low: number | null;
+  price_recommended: number | null;
+  price_high: number | null;
   sell_speed_estimate: SellSpeed;
   reasoning: string;
   comp_count: number;

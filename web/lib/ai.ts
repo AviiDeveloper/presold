@@ -14,8 +14,8 @@ import type { EbayComp, Item, PriceGuidance } from "./types";
  * are config, the prompts are content.
  */
 
-export const IDENTIFY_ITEM_PROMPT_VERSION = "v1.0";
-export const PRICE_GUIDANCE_PROMPT_VERSION = "v1.0";
+export const IDENTIFY_ITEM_PROMPT_VERSION = "v1.1";
+export const PRICE_GUIDANCE_PROMPT_VERSION = "v1.1";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "anthropic/claude-haiku-4-5";
@@ -124,6 +124,8 @@ export async function identifyItem(input: {
     "",
     "Be conservative. If you cannot tell the brand or size from the photos, return null for that field — never guess. UK resellers are punished for inaccurate listings.",
     "",
+    "If the photo contains no identifiable resellable item at all, return every identifiable field as null and confidence: 0. Do not invent placeholder values.",
+    "",
     "Respond with ONLY a valid JSON object matching the schema. No prose, no code fences, no commentary.",
   ].join("\n");
 
@@ -132,15 +134,15 @@ export async function identifyItem(input: {
     "",
     "Return JSON matching this schema:",
     "{",
-    '  "title": "string, max 60 chars, sentence case, no clickbait",',
-    '  "description": "string, 2-4 short paragraphs, factual, mention condition and any flaws visible",',
+    '  "title": "string or null, max 60 chars, sentence case, no clickbait",',
+    '  "description": "string or null, 2-4 short paragraphs, factual, mention condition and any flaws visible",',
     '  "brand": "string or null",',
-    '  "category": "string, broad category like \'Women\\\'s tops\' or \'Men\\\'s trainers\'",',
+    '  "category": "string or null, broad category like \'Women\\\'s tops\' or \'Men\\\'s trainers\'",',
     '  "size": "string or null, UK sizing if clothing",',
-    '  "color": "string, primary colour",',
-    '  "condition": "one of: new_with_tags, new_without_tags, very_good, good, satisfactory",',
-    '  "weight_grams_estimate": "integer, for shipping",',
-    '  "confidence": "number 0-1, how sure you are about brand and category"',
+    '  "color": "string or null, primary colour",',
+    '  "condition": "string or null — one of: new_with_tags, new_without_tags, very_good, good, satisfactory (null only if you can\\\'t identify the item at all)",',
+    '  "weight_grams_estimate": "integer or null, grams for shipping",',
+    '  "confidence": "number 0-1, how sure you are about brand and category (0 if no item visible)"',
     "}",
   ].join("\n");
 
@@ -171,6 +173,8 @@ export async function suggestPrice(input: {
     "",
     "If comps are sparse (under 3) or have wide variance (>50% spread), say so honestly. Do not invent confidence you don't have.",
     "",
+    "If the item couldn't be identified (all identifiable fields null) or comps are too sparse to anchor a recommendation, return null for the three price fields and confidence: 0.",
+    "",
     "Respond with ONLY a valid JSON object. No prose, no code fences, no commentary.",
   ].join("\n");
 
@@ -183,11 +187,11 @@ export async function suggestPrice(input: {
     "",
     "Return JSON:",
     "{",
-    '  "price_low": "number, GBP, conservative quick-sale price",',
-    '  "price_recommended": "number, GBP, balanced price",',
-    '  "price_high": "number, GBP, patient-seller price",',
+    '  "price_low": "number or null, GBP, conservative quick-sale price",',
+    '  "price_recommended": "number or null, GBP, balanced price",',
+    '  "price_high": "number or null, GBP, patient-seller price",',
     '  "sell_speed_estimate": "one of: fast, medium, slow, uncertain",',
-    '  "reasoning": "string, 1-2 sentences, cite the comp data",',
+    '  "reasoning": "string, 1-2 sentences, cite the comp data (or note why no price could be given)",',
     '  "comp_count": "integer",',
     '  "confidence": "number 0-1"',
     "}",
