@@ -7,7 +7,7 @@ import {
   identifyItem,
   suggestPrice,
 } from "./ai";
-import { fetchSoldComps } from "./ebay";
+import { fetchSoldComps } from "./comps";
 import { takeScanSlot } from "./rate-limit";
 import type { EbayComp, Item, PriceGuidance } from "./types";
 
