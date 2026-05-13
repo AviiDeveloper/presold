@@ -94,9 +94,15 @@ Core tables: `users`, `items`, `photos`, `listings`, `sales`, `price_scans`.
 
 ## 4. Build Timeline
 
-Off-time pace, ~15-20 hrs/week.
+Off-time pace, ~15-20 hrs/week. **Weeks and days are goals, not deadlines** — move faster where possible. Status markers next to each week's heading reflect actual state:
 
-### Week 0: Setup (2-3 evenings, parallel work)
+- ✅ done
+- 🚧 in progress
+- ⏳ pending
+
+Update the marker in the same PR that completes (or starts) the work.
+
+### Week 0: Setup ✅ (2-3 evenings, parallel work)
 1. Buy domain (working name: `presold.app` or chosen brand)
 2. Apple Developer account (£79/year, 2-3 day provisioning)
 3. eBay Developer account (apply now, ~5 days for production access)
@@ -108,7 +114,25 @@ Off-time pace, ~15-20 hrs/week.
 9. Run `bootstrap.sh` (this scaffold)
 10. First commit
 
-### Week 1: Free web tool ships (4-5 evenings)
+**Week 0 close-out status:**
+
+Done in-repo:
+- ✅ Scaffold generated from `bootstrap.sh` and renamed to PreSold
+- ✅ Public GitHub repo at `github.com/AviiDeveloper/presold`
+- ✅ Repo discipline: LICENSE (All Rights Reserved), CONTRIBUTING, PR template, session-log convention
+- ✅ Initial commit + first meta-PR (this week's work) on `main`
+
+Blocked on external accounts (parallel user work, not blocking Week 1 code):
+- ⏳ Buy domain (working name: `presold.app`)
+- ⏳ Apple Developer account (£79/year, 2-3 day provisioning) — needed for Week 4 TestFlight
+- ⏳ eBay Developer account application (~5 days for production access) — needed for Week 1 comps; sandbox fallback documented
+- ⏳ Anthropic API key with billing — needed for Week 1 scanner
+- ⏳ Supabase project created + keys copied to `web/.env.local` — needed for Week 1 waitlist
+- ⏳ Vercel account linked to GitHub — needed for Week 1 deploy
+- ⏳ PostHog account — Week 1+
+- ⏳ Sentry account — Week 1+
+
+### Week 1: Free web tool ships ⏳ (4-5 evenings)
 **Goal: public price scanner live, email capture working, first TikTok using it.**
 
 - D1-2: Next.js scaffold, landing page, waitlist form, Vercel deploy
@@ -117,7 +141,7 @@ Off-time pace, ~15-20 hrs/week.
 
 **Deliverable**: live URL, working scanner, first content posted.
 
-### Week 2: iOS app skeleton + capture flow (5-7 evenings)
+### Week 2: iOS app skeleton + capture flow ⏳ (5-7 evenings)
 **Goal: capture an item end-to-end on TestFlight.**
 
 - D1-2: Xcode scaffold, Supabase Swift client, magic-link auth, tab bar
@@ -126,7 +150,7 @@ Off-time pace, ~15-20 hrs/week.
 
 **Deliverable**: end-to-end capture-to-clipboard working on real iPhone.
 
-### Week 3: Inventory, profit, polish (4-6 evenings)
+### Week 3: Inventory, profit, polish ⏳ (4-6 evenings)
 **Goal: beta-ready product.**
 
 - D1-2: Inventory filters, item detail view, status transitions, manual sold flow
@@ -136,7 +160,7 @@ Off-time pace, ~15-20 hrs/week.
 
 **Deliverable**: beta-ready product, used on 30 real items.
 
-### Week 4: Beta + marketing prep (3-4 evenings)
+### Week 4: Beta + marketing prep ⏳ (3-4 evenings)
 **Goal: 10 beta users, first influencer scheduled, App Store submitted.**
 
 - D1: Onboarding polish, privacy, ToS, support email, TestFlight invite
@@ -145,7 +169,7 @@ Off-time pace, ~15-20 hrs/week.
 
 **Deliverable**: TestFlight live, App Store review submitted, first influencer drop scheduled.
 
-### Week 5+: Launch and iterate
+### Week 5+: Launch and iterate ⏳
 - App Store approval (3-7 days)
 - First influencer drop, paid post + 30% affiliate
 - £30-50/day Meta ads to demo video
