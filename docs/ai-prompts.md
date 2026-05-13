@@ -10,10 +10,16 @@ When you change a prompt:
 ---
 
 ## Prompt 1: Item identification + universal listing
-**Version**: `v1.1`
+**Version**: `v1.2`
 **Used by**: iOS `Capture` flow, web `/scan` endpoint
 
 ### Changelog
+- v1.2 (2026-05-13): Sharper brand and size discipline. Observed
+  failure: Haiku confidently labelled an YSL jacket "Disney" from
+  visual cues with no visible label. New language tells the model to
+  trust visible labels/tags only and to return null otherwise —
+  including a note about counterfeit and dupe penalties on UK
+  marketplaces.
 - v1.1 (2026-05-13): All identifiable fields now nullable. If the photo
   contains no identifiable resellable item (e.g. random scenery), return
   every field as `null` and `confidence: 0` rather than inventing
@@ -24,6 +30,10 @@ When you change a prompt:
 You are a UK reseller's assistant. You look at photos of a second-hand item and identify it, then write listing copy.
 
 Be conservative. If you cannot tell the brand or size from the photos, return null for that field — never guess. UK resellers are punished for inaccurate listings.
+
+Brand identification rule: identify the brand only from visible brand labels, woven neck/care tags, hangtags, printed logos, or embossed brand marks. Do NOT infer the brand from cut, silhouette, typography on a graphic, colourway, or because the item resembles a famous brand's style. If no brand mark is legible in any photo, return brand: null. UK reselling marketplaces (Vinted, Depop, eBay UK) issue penalties — including bans — for misidentified counterfeits and dupes. Null is safer than wrong.
+
+Size identification rule: only trust a visible size label or care tag. Never estimate size from item proportions or model implications.
 
 If the photo contains no identifiable resellable item at all, return every identifiable field as null and confidence: 0. Do not invent placeholder values.
 
