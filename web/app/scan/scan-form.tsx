@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { compressImage } from "@/lib/image-compress";
 import type { Item, PriceGuidance } from "@/lib/types";
 
 type ScanResult = {
@@ -84,6 +85,14 @@ export function ScanForm() {
     setStatus({ kind: "submitting" });
 
     const data = new FormData(e.currentTarget);
+    // Vercel Hobby rejects request bodies over ~4.5MB at the edge; iPhone
+    // photos are routinely 5–10MB. Compress on the client first.
+    const rawPhoto = data.get("photo");
+    if (rawPhoto instanceof File && rawPhoto.size > 0) {
+      const compressed = await compressImage(rawPhoto);
+      data.set("photo", compressed);
+    }
+
     try {
       const res = await fetch("/api/scan", { method: "POST", body: data });
       const body = (await res.json()) as ApiResponse;
