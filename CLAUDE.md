@@ -73,9 +73,9 @@ Photo capture → AI listing generation → price guidance → inventory → man
 - **Mobile**: Native iOS, SwiftUI, iOS 17+ minimum
 - **Web**: Next.js 15 App Router, Vercel
 - **Backend**: Supabase (Postgres, Auth, Storage, Edge Functions)
-- **AI**: Claude Haiku 4.5 (`claude-haiku-4-5`) — vision + text generation
+- **AI**: Claude Sonnet 4.6 (`claude-sonnet-4-6`) — vision + text generation (bumped from Haiku 4.5 per ADR-006)
 - **Billing**: StoreKit 2 (iOS)
-- **Item identification**: Haiku vision
+- **Item identification**: Sonnet vision
 - **Price comps**: eBay Browse API + Marketplace Insights API
 - **Analytics**: PostHog
 - **Errors**: Sentry

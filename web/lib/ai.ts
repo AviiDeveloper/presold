@@ -18,7 +18,9 @@ export const IDENTIFY_ITEM_PROMPT_VERSION = "v1.2";
 export const PRICE_GUIDANCE_PROMPT_VERSION = "v1.1";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = "anthropic/claude-haiku-4-5";
+// Bumped from Haiku to Sonnet for vision-reading accuracy (label/logo OCR).
+// See docs/decisions/006-sonnet-for-vision.md
+const MODEL = "anthropic/claude-sonnet-4-6";
 
 const SUPPORTED_IMAGE_TYPES = new Set([
   "image/jpeg",

@@ -1,10 +1,10 @@
 # AI Prompts
 
-All prompts use `claude-haiku-4-5`. Centralised here so iOS and web share the same source of truth.
+All prompts run on `claude-sonnet-4-6` (bumped from Haiku 4.5 per ADR-006 — better label/logo OCR for the reseller scanner). Centralised here so iOS and web share the same source of truth.
 
 When you change a prompt:
 1. Bump the version in this doc.
-2. Update the version constant in `ios/PreSold/Services/AIService.swift` and `web/lib/anthropic.ts`.
+2. Update the version constant in `ios/PreSold/Services/AIService.swift` and `web/lib/ai.ts`.
 3. Store the version with each item in `items.ai_prompt_version`.
 
 ---
