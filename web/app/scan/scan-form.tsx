@@ -133,13 +133,12 @@ export function ScanForm() {
           type="file"
           name="photo"
           accept="image/jpeg,image/png,image/webp,image/gif"
-          capture="environment"
           required
           onChange={onFileChange}
           className="block w-full rounded-md border border-(--color-border) bg-background p-3 text-sm file:mr-3 file:rounded file:border-0 file:bg-foreground file:px-3 file:py-1.5 file:text-background"
         />
         <span className="text-xs text-(--color-muted-foreground)">
-          One clear photo. Front of the item, good light, neutral background.
+          Take a photo or pick one from your library. Front of the item, good light, neutral background.
         </span>
       </label>
 
