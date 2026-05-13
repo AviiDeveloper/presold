@@ -86,6 +86,19 @@ Per-platform listing drafts. One item can have up to three listings.
 | `sold_at` | timestamptz | |
 | `source` | text | enum: email, manual |
 
+### `waitlist`
+
+Email captures from the marketing landing page. Public insert, no public read (service role only).
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid PK | |
+| `email` | text | unique |
+| `source` | text nullable | e.g. `landing`, `tiktok`, free-form tag |
+| `user_agent` | text nullable | best-effort, for debug only |
+| `ip_address` | text nullable | rate limiting / debug |
+| `created_at` | timestamptz | |
+
 ### `price_scans`
 
 Public, used by free web tool. Rate-limited per IP.
@@ -109,6 +122,7 @@ Public, used by free web tool. Rate-limited per IP.
 
 - `items`, `photos`, `listings`, `sales`: `user_id = auth.uid()` on all operations
 - `price_scans`: anyone can insert; anyone can read by `shareable_slug` for sharing
+- `waitlist`: anyone can insert; no public read (service role only)
 - `users`: user can read own row; service role only can update subscription fields
 
 ## Indexes worth having from day one
