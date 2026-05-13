@@ -42,7 +42,7 @@ TikTok influencer-led, UK reseller niche (#ukreseller, #vintedseller, #depopsell
 - **Mobile**: Native iOS, SwiftUI, iOS 17+
 - **Web**: Next.js 15 App Router, Vercel
 - **Backend**: Supabase (Postgres, Auth, Storage, Edge Functions)
-- **AI**: Claude Haiku 4.5 (`claude-haiku-4-5`) for vision + text generation
+- **AI**: Claude Sonnet 4.6 (`claude-sonnet-4-6`) for vision + text generation. Bumped from Haiku 4.5 after live testing showed Haiku unreliable at reading brand labels on garments — see `docs/decisions/006-sonnet-for-vision.md`. Drop back to Haiku once accuracy target is met on a refined prompt or with multi-photo input.
 - **Billing**: StoreKit 2 on iOS, Stripe deferred until web has paid features
 - **Comps**: eBay Browse API + Marketplace Insights API
 - **Analytics**: PostHog (free tier)
@@ -52,7 +52,7 @@ TikTok influencer-led, UK reseller niche (#ukreseller, #vintedseller, #depopsell
 - **SwiftUI**: native, fast iteration if fluent, no React Native maintenance tax
 - **Next.js**: fastest path to public web tool with email capture and SEO
 - **Supabase**: auth + db + storage + edge functions in one, already familiar from SL-MAS
-- **Haiku 4.5 vision**: ~£0.002 per item ID + listing generation, fast, sufficient quality
+- **Sonnet 4.6 vision**: ~£0.006 per item ID + listing generation. Bumped from Haiku 4.5 (ADR-006) — better OCR on small labels and logos, the actual operation a reseller scanner depends on. Cost still well under the per-user budget after the 3-scan-per-IP-per-day cap and the 24h Apify cache
 
 ### Data flow
 ```
