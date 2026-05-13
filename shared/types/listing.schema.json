@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://presold.app/schemas/listing.json",
+  "title": "Listing",
+  "description": "Platform-specific listing output by platform reformatting (Prompt 2)",
+  "type": "object",
+  "required": ["title", "description", "tags"],
+  "properties": {
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 5
+    }
+  }
+}

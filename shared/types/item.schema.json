@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://presold.app/schemas/item.json",
+  "title": "Item",
+  "description": "Universal item data output by identify-item (Prompt 1, see docs/ai-prompts.md)",
+  "type": "object",
+  "required": ["title", "description", "category", "color", "condition", "weight_grams_estimate", "confidence"],
+  "properties": {
+    "title": { "type": "string", "maxLength": 60 },
+    "description": { "type": "string" },
+    "brand": { "type": ["string", "null"] },
+    "category": { "type": "string" },
+    "size": { "type": ["string", "null"] },
+    "color": { "type": "string" },
+    "condition": {
+      "type": "string",
+      "enum": ["new_with_tags", "new_without_tags", "very_good", "good", "satisfactory"]
+    },
+    "weight_grams_estimate": { "type": "integer", "minimum": 0 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

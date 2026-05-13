@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://presold.app/schemas/price-guidance.json",
+  "title": "PriceGuidance",
+  "description": "Price guidance output by Prompt 3",
+  "type": "object",
+  "required": ["price_low", "price_recommended", "price_high", "sell_speed_estimate", "reasoning", "comp_count", "confidence"],
+  "properties": {
+    "price_low": { "type": "number", "minimum": 0 },
+    "price_recommended": { "type": "number", "minimum": 0 },
+    "price_high": { "type": "number", "minimum": 0 },
+    "sell_speed_estimate": {
+      "type": "string",
+      "enum": ["fast", "medium", "slow", "uncertain"]
+    },
+    "reasoning": { "type": "string" },
+    "comp_count": { "type": "integer", "minimum": 0 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

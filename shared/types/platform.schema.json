@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://presold.app/schemas/platform.json",
+  "title": "Platform",
+  "description": "Supported reselling platforms",
+  "type": "string",
+  "enum": ["vinted", "depop", "ebay"]
+}
