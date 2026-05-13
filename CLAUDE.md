@@ -43,12 +43,14 @@ Photo capture → AI listing generation → price guidance → inventory → man
 
 ## What v1 IS NOT
 
-- Cross-listing automation (deferred to v2; see `docs/decisions/001-defer-crosslisting.md`)
 - Authentication/counterfeit checking (deferred to v3)
 - Android (deferred indefinitely)
 - Non-UK platforms (out of scope)
-- Multi-tier pricing (one tier, £7.99/month, full stop)
+- Multi-tier pricing (one tier, £7.99/month — pricing review queued in ADR-007 post-Phase-A)
 - AI features beyond item identification, listing generation, and price guidance
+
+(Cross-listing automation was a v1 non-goal per ADR-001; ADR-007 pulls it
+into v1 in phases — eBay UK via native API, Vinted/Depop via WKWebView.)
 
 ## What to do when uncertain
 

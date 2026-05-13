@@ -27,12 +27,13 @@ TikTok influencer-led, UK reseller niche (#ukreseller, #vintedseller, #depopsell
 - One viral TikTok with 100k+ views in first 8 weeks post-launch
 
 ### Non-goals (resist these explicitly)
-- Cross-listing automation in v1
 - Authentication / counterfeit checking
 - Multi-currency or non-UK platforms
 - Android app in v1
 - Features that require >£500/month in API costs at 200 active users
 - Any AI feature beyond item identification, listing generation, and price guidance
+
+(Cross-listing was previously a v1 non-goal per ADR-001; ADR-007 pulls it back into v1 in phases — eBay UK via native API, Vinted and Depop via WKWebView automation. See `docs/decisions/007-pull-cross-listing-into-v1.md`.)
 
 ---
 
@@ -142,34 +143,58 @@ Blocked on external accounts (parallel user work, not blocking Week 1 code):
 **Deliverable**: live URL, working scanner, first content posted.
 
 ### Week 2: iOS app skeleton + capture flow 🚧 (5-7 evenings)
-**Goal: capture an item end-to-end on TestFlight.**
+**Goal: capture an item end-to-end on TestFlight, listing copy generated.**
 
 - D1-2: Xcode scaffold (requires user to create `PreSold.xcodeproj` in Xcode — see `docs/sessions/NEXT_SESSION.md` for the bootstrap recipe), Supabase Swift client, magic-link auth, tab bar
 - D3-4: Capture flow (multi-photo capture, upload), `identify-item` edge function, listing display
-- D5-7: Listing review screen (Vinted/Depop/eBay tabs), copy-to-clipboard, inventory list, persistence
+- D5-7: Listing review screen (Vinted/Depop/eBay tabs), AI-generated listing copy per platform (Prompt 2), inventory list, persistence
 
-**Deliverable**: end-to-end capture-to-clipboard working on real iPhone.
+### Week 3: Cross-listing Phase A — eBay UK native API ⏳ (3-4 evenings)
+**Goal: one-tap publish to eBay UK from the app.**
 
-### Week 3: Inventory, profit, polish ⏳ (4-6 evenings)
-**Goal: beta-ready product.**
+Per ADR-007. eBay has a sanctioned API, lowest risk, validates the cross-listing pitch on day one.
 
-- D1-2: Inventory filters, item detail view, status transitions, manual sold flow
-- D3: Profit view, `PricingService` with fee constants
+- D1: eBay OAuth 2.0 flow, token storage (`users.ebay_oauth_token_encrypted`), Supabase edge function proxy
+- D2: Sell Inventory API integration — `inventory_item` → `offer` → `publish`. Photo upload to eBay's image endpoint
+- D3: `ListingDetailView` "Publish to eBay" button, status indicators, error handling
+- D4: Profit calculation reflects eBay's posted-listing state; manual edit fallback
+
+### Week 4: Cross-listing Phase B — Vinted via WKWebView ⏳ (4-5 evenings)
+**Goal: pre-fill Vinted's new-listing form; user taps Post.**
+
+Per ADR-007. Highest-volume UK platform.
+
+- D1: WKWebView host, persistent cookie store, user login flow inside the WebView
+- D2-3: JavaScript form-fill (title, brand, category, size, condition, materials, price). Photo upload via JS bridge from `PHPickerViewController`
+- D4: Selector versioning + failure fallback to clipboard handoff
+- D5: Daily automated selector-break test (GitHub Actions macOS runner)
+
+### Week 5: Cross-listing Phase C — Depop via WKWebView ⏳ (3-4 evenings)
+**Goal: same as Phase B, on Depop.**
+
+- D1-2: Depop-specific automation module, reusing the Vinted harness
+- D3: Profit, inventory, manual sold flow (carried over from original Week 3 plan)
 - D4: Email forward setup, `parse-sale-email` edge function
-- D5-6: StoreKit 2 integration, capture flow polish, self-dogfood 30 items
 
-**Deliverable**: beta-ready product, used on 30 real items.
+### Week 6: Beta + StoreKit + polish ⏳ (4-5 evenings)
+**Goal: TestFlight ready, billing wired, used on 30+ real items by founder.**
 
-### Week 4: Beta + marketing prep ⏳ (3-4 evenings)
-**Goal: 10 beta users, first influencer scheduled, App Store submitted.**
+- D1: StoreKit 2 integration, 14-day trial logic, £9.99/mo + £79/yr SKUs (subject to ADR-007 post-Phase-A pricing review)
+- D2: Onboarding polish, privacy, ToS, support email
+- D3-4: Self-dogfood 30+ real items, prompt accuracy iteration
+- D5: TestFlight invite, 10 beta users from friends-of-friends
 
-- D1: Onboarding polish, privacy, ToS, support email, TestFlight invite
-- D2: Outreach to 5-10 TikTok creators, 10 friends-of-friends for beta
-- D3-4: Fix beta feedback, App Store submission
+**Deliverable**: beta-ready product with cross-listing to eBay + Vinted + Depop, used on 30 real items.
 
-**Deliverable**: TestFlight live, App Store review submitted, first influencer drop scheduled.
+### Week 7: Marketing prep + App Store submission ⏳ (3-4 evenings)
+**Goal: App Store submitted, first influencer drop scheduled.**
 
-### Week 5+: Launch and iterate ⏳
+- D1-2: Outreach to 5-10 TikTok creators, fix beta feedback
+- D3-4: App Store submission, marketing site polish, demo video shoot
+
+**Deliverable**: App Store review submitted, first influencer drop scheduled, beta users actively flipping items.
+
+### Week 8+: Launch and iterate ⏳
 - App Store approval (3-7 days)
 - First influencer drop, paid post + 30% affiliate
 - £30-50/day Meta ads to demo video

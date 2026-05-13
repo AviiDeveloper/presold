@@ -9,12 +9,12 @@
 
 ## Snapshot
 
-- **Last updated:** 2026-05-13, after the `week-1/close-out` PR
-- **Last merged PR:** #12 (`hotfix/apify-single-tier` → `main` at `06439b8`)
-- **In flight:** `week-1/close-out` — docs hygiene + Week 2 bootstrap recipe
+- **Last updated:** 2026-05-13, after the `chore/adr-007-cross-listing-v1` PR
+- **Last merged PR:** #13 (`week-1/close-out` → `main` at `c3f9f49`)
+- **In flight:** `chore/adr-007-cross-listing-v1` — reopens ADR-001, pulls cross-listing into v1 in phases, restructures Weeks 3–8 of PLAN.md
 - **Repo:** https://github.com/AviiDeveloper/presold (public)
 - **Production URL:** https://presold-three.vercel.app (Vercel auto alias)
-- **Current PLAN.md state:** Week 0 ✅ · Week 1 ✅ (D5 shareable descoped) · Week 2 🚧
+- **Current PLAN.md state:** Week 0 ✅ · Week 1 ✅ · Week 2 🚧 (iOS scaffold) · Week 3–5 ⏳ (cross-listing phases A/B/C per ADR-007) · Week 6 ⏳ (beta + StoreKit) · Week 7+ ⏳ (launch)
 
 ## Read these first, in order
 
@@ -52,6 +52,20 @@
   view on `/scan` is sufficient for v1.
 
 ## What's next
+
+**Strategic shift** (ADR-007): cross-listing is now in v1. Launch slips from
+Week 4–5 to Week 6–7. The reason is the competitive picture surfaced this
+session — AI-scanner-only is commoditised (Listed AI alone has ~60k users)
+and the per-feature parity with Voolist / Vendoo / Zipsale becomes load-
+bearing for the £9.99/mo pricing pitch.
+
+Order of phases per ADR-007:
+- **Week 2** — iOS scaffold (unchanged)
+- **Week 3, Phase A** — eBay UK via native Sell Inventory API (sanctioned, lowest risk)
+- **Week 4, Phase B** — Vinted via WKWebView
+- **Week 5, Phase C** — Depop via WKWebView + carry-over inventory/profit/email work
+- **Week 6** — StoreKit + beta polish
+- **Week 7+** — App Store submission, launch
 
 **Next branch:** `week-2/ios-scaffold`
 
@@ -115,10 +129,11 @@ git commit -m "[Week 2] feat: scaffold SwiftUI project in Xcode"
 | Apple Developer account (£79/yr, 2-3 days) | TestFlight (Week 4) | ⏳ Apply mid-Week 2 |
 | Real iPhone | Camera testing | ✅ (used for web scanner tests) |
 
-**Carried over from Week 1, no longer blocking:**
+**Carried over from Week 1, no longer blocking Week 2 specifically but blocking later weeks:**
 
 - Anthropic direct API key (deferred — OpenRouter covers us, ADR-004)
-- eBay Developer API keys (deferred — Apify covers us, ADR-005)
+- eBay Browse API keys (deferred — Apify covers us for sold comps, ADR-005)
+- **eBay Sell Inventory API OAuth credentials (BLOCKS Week 3 Phase A — ADR-007)**: separate from Browse keys. Apply at developer.ebay.com for production access to the Sell APIs; allow ~5 business days.
 - Real reseller test set of 50 items (PLAN §11 DoD — start collecting now)
 
 ## Open follow-ups
@@ -142,6 +157,13 @@ git commit -m "[Week 2] feat: scaffold SwiftUI project in Xcode"
   Insights when production approval lands.
 - **Sonnet still upgrade** (ADR-006) — drop back to Haiku if accuracy
   holds at the DoD bar.
+- **Pricing review queued** (ADR-007): £7.99/mo from PLAN §7 might bump
+  to £9.99/mo once we have cross-listing in place. Decide after Phase A
+  ships and we see early conversion data.
+- **Listing-copy generation** (Prompt 2, already specced in
+  `docs/ai-prompts.md` v1.0): not yet implemented in code. Cheap
+  (~$0.008/item all 3 platforms on Haiku batched). Ships in Week 2 D5-7
+  alongside the listing review screen.
 
 ## How to maintain this file
 
