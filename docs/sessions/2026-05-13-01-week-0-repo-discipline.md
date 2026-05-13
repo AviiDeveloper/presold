@@ -85,6 +85,6 @@ and drop keys into `web/.env.local`.
 
 ## Outcome
 
-- PR: _(to be filled in after merge)_
-- Merge commit: _(to be filled in after merge)_
-- Merged at: _(to be filled in after merge)_
+- PR: https://github.com/AviiDeveloper/presold/pull/1
+- Merge commit: `4e1930a8cad3f51c737d413c874c37995d712893`
+- Merged at: 2026-05-13 16:43 UTC

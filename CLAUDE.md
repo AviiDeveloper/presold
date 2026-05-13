@@ -31,7 +31,8 @@ This project is public on GitHub as a portfolio piece + working business. Every 
 - **Mirror merged PR descriptions into `docs/sessions/YYYY-MM-DD-NN-slug.md`** so the project history survives the platform.
 - **Before every push:** run `git status` and verify no `.env*`, no `*.xcconfig` (non-example), no `secrets.json`, no `*.pem`/`*.key`. The `.gitignore` catches these but verify.
 - **`PLAN.md` carries status markers (✅ done / 🚧 in progress / ⏳ pending).** Update them in the same PR as the code change. Plan and code must always agree.
-- **A session ends when its PR merges.** The next session opens by reading `PLAN.md` (next ⏳ item) and the last entries in `docs/sessions/`.
+- **A session ends when its PR merges.** The next session opens by reading [`docs/sessions/NEXT_SESSION.md`](./docs/sessions/NEXT_SESSION.md) (the live handover doc), `PLAN.md` (next ⏳ item), and the most recent entries in `docs/sessions/`.
+- **`docs/sessions/NEXT_SESSION.md` is updated as the last edit before opening every PR.** That file is always the live state; the PR's diff includes its update. See the maintenance section at the bottom of that file.
 - **Architectural decision not already in the plan?** Write an ADR in `docs/decisions/NNN-short-name.md` in the same PR.
 
 Full conventions: [`CONTRIBUTING.md`](./CONTRIBUTING.md). Session-log format: [`docs/sessions/README.md`](./docs/sessions/README.md).

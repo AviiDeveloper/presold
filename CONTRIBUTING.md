@@ -64,15 +64,21 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 
 ## Pull request workflow
 
-1. Open the PR with `gh pr create`. The template (in
+1. **Update [`docs/sessions/NEXT_SESSION.md`](./docs/sessions/NEXT_SESSION.md)** as
+   the last edit of the session. Move completed items out of "What's next"
+   into "What's done", set the upcoming "Next branch", add or clear any
+   open follow-ups. This keeps the live handover always fresh — the PR's
+   diff includes the update.
+2. Open the PR with `gh pr create`. The template (in
    `.github/pull_request_template.md`) auto-populates the body.
-2. Fill **every** section of the template. The PR body is the session log.
-3. Self-review the diff before requesting/forcing merge.
-4. Merge with `gh pr merge --merge --delete-branch` (preserve commit history;
+3. Fill **every** section of the template. The PR body is the session log.
+4. Self-review the diff before merging.
+5. Merge with `gh pr merge --merge --delete-branch` (preserve commit history;
    we split commits intentionally — squashing destroys that signal).
-5. After merge, copy the merged PR URL + commit hash into the matching
-   `docs/sessions/YYYY-MM-DD-NN-slug.md` file, then commit-and-push that
-   tiny follow-up on the next branch.
+6. After merge, fill the Outcome section of the matching
+   `docs/sessions/YYYY-MM-DD-NN-slug.md` file with the merged PR URL +
+   merge commit SHA. This is the first action of the next session, on the
+   next branch.
 
 **Never:**
 - Merge a red PR (CI failures, broken tests, broken build).
