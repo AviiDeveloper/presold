@@ -132,12 +132,12 @@ Blocked on external accounts (parallel user work, not blocking Week 1 code):
 - ⏳ PostHog account — Week 1+
 - ⏳ Sentry account — Week 1+
 
-### Week 1: Free web tool ships ⏳ (4-5 evenings)
+### Week 1: Free web tool ships 🚧 (4-5 evenings)
 **Goal: public price scanner live, email capture working, first TikTok using it.**
 
-- D1-2: Next.js scaffold, landing page, waitlist form, Vercel deploy
-- D3-4: `/scan` page, `/api/scan` route, Supabase `price_scans` table + storage, Haiku vision identification, eBay comp lookup
-- D5: shareable result page (OG images), polish, post first TikTok
+- ✅ D1-2: Next.js scaffold, landing page, waitlist form (Vercel deploy deferred — account not linked yet)
+- ⏳ D3-4: `/scan` page, `/api/scan` route, Supabase `price_scans` table + storage, Haiku vision identification, eBay comp lookup
+- ⏳ D5: shareable result page (OG images), polish, post first TikTok
 
 **Deliverable**: live URL, working scanner, first content posted.
 

@@ -48,3 +48,6 @@ secrets.json
 
 # Claude Code
 .claude/cache/
+
+# Transient handover notes (mid-session restart bridges, never committed)
+RESTART_HANDOVER.md
