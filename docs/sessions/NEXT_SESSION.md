@@ -9,9 +9,9 @@
 
 ## Snapshot
 
-- **Last updated:** 2026-05-13, after the `week-1/nextjs-scaffold` PR
-- **Last merged PR:** _to be filled in once merged_
-- **`main` will be at:** _merge commit of this PR_
+- **Last updated:** 2026-05-13, after the `chore/agent-skills` PR
+- **Last merged PR:** #3 (`week-1/nextjs-scaffold` → `main` at `5093d1a`)
+- **In flight:** `chore/agent-skills` — Supabase agent-skills lockfile + gitignore for per-machine install artefacts
 - **Repo:** https://github.com/AviiDeveloper/presold (public)
 - **Current PLAN.md state:** Week 0 ✅ closed · Week 1 🚧 (D1-2 ✅, D3-4 ⏳, D5 ⏳)
 
@@ -108,10 +108,14 @@ git checkout main && git pull --ff-only
   monorepo root to `web/`.
 - **Waitlist insert not exercised against real Supabase.** Drop credentials
   into `web/.env.local`, run `npm run dev`, submit the form, check the
-  `waitlist` table.
+  `waitlist` table. With the Supabase MCP connector now live, the
+  migration can also be applied straight from the session.
 - **`next lint` deprecation warning.** Next 15 prints a notice that
   `next lint` is removed in Next 16. Migrate to the ESLint CLI before
   bumping to Next 16; not urgent.
+- **Agent skills installed via `npx skills add supabase/agent-skills`.**
+  Lockfile committed; `.agents/` and `.claude/skills/` are gitignored.
+  Fresh clones run `npx skills install` to materialise.
 
 ## How to maintain this file
 
