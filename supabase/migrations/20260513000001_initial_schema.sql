@@ -79,7 +79,11 @@ create table public.sales (
   sold_at timestamptz not null,
   source text not null check (source in ('email','manual'))
 );
-create index sales_user_sold_idx on public.sales ((select user_id from public.items where id = item_id), sold_at desc);
+-- Note: data-model.md describes a composite (user_id, sold_at) index for the profit view,
+-- but `user_id` is not on `sales` — it's derived via items. Postgres rejects subqueries in
+-- index expressions, so we index on (item_id, sold_at) for now. The profit view query
+-- joins items and filters by item.user_id; planner uses items_user_status_idx + this one.
+create index sales_item_sold_idx on public.sales (item_id, sold_at desc);
 
 -- PRICE SCANS (public, free tool)
 create table public.price_scans (

@@ -9,11 +9,11 @@
 
 ## Snapshot
 
-- **Last updated:** 2026-05-13, after the `chore/agent-skills` PR
-- **Last merged PR:** #3 (`week-1/nextjs-scaffold` → `main` at `5093d1a`)
-- **In flight:** `chore/agent-skills` — Supabase agent-skills lockfile + gitignore for per-machine install artefacts
+- **Last updated:** 2026-05-13, after the `week-1/scan-flow` PR
+- **Last merged PR:** #4 (`chore/agent-skills` → `main` at `212da63`)
+- **In flight:** `week-1/scan-flow` — `/scan` price scanner end-to-end (Haiku vision + eBay comps + price guidance + public `price_scans` row)
 - **Repo:** https://github.com/AviiDeveloper/presold (public)
-- **Current PLAN.md state:** Week 0 ✅ closed · Week 1 🚧 (D1-2 ✅, D3-4 ⏳, D5 ⏳)
+- **Current PLAN.md state:** Week 0 ✅ closed · Week 1 🚧 (D1-2 ✅, D3-4 ✅, D5 ⏳)
 
 ## Read these first, in order
 
@@ -38,26 +38,42 @@
 - ✅ **Waitlist** end-to-end (no creds yet): form (server action +
   client component), API route, shared `lib/waitlist.ts` helper,
   `waitlist` table migration + RLS, `data-model.md` updated
+- ✅ **Supabase MCP connector** registered at project scope; agent-skills
+  lockfile committed for reproducible install
+- ✅ **Price scanner** (Week 1 D3-4): `/scan` page + form, `/api/scan`
+  route, `lib/ai.ts` (Haiku 4.5 via OpenRouter — ADR-004),
+  `lib/ebay.ts` (Marketplace Insights with 24h comp cache +
+  broaden-on-sparse query), `lib/rate-limit.ts` (3/IP/day in-memory),
+  `lib/scan.ts` orchestrator. Photos land in the `scan-photos` bucket
+  keyed by `shareable_slug`.
+- ✅ **Supabase live**: 4 migrations applied to project
+  `yiowyehukmhkblmogwjy`. 7 tables RLS-on (users, items, photos,
+  listings, sales, price_scans, waitlist) + buckets `item-photos`
+  (private) and `scan-photos` (public). One bug fix on the sales index
+  expression along the way.
+- ✅ **AI gateway live via OpenRouter** (ADR-004): `web/.env.local`
+  populated with Supabase URL/anon/service-role + OpenRouter key. eBay
+  vars empty pending production approval (scanner degrades gracefully).
 
 ## What's next
 
-**Next branch:** `week-1/scan-flow`
+**Next branch:** `week-1/scan-result`
 
-**Scope of next session (PLAN.md §4, Week 1 Day 3-4):**
+**Scope of next session (PLAN.md §4, Week 1 Day 5):**
 
-- `web/app/scan/page.tsx` — upload UI (photo + optional category hint)
-- `web/app/api/scan/route.ts` — accepts photo, writes to `scan-photos`
-  bucket, inserts `price_scans` row, calls Haiku vision + eBay comps
-- `web/lib/anthropic.ts` — server-side Anthropic client
-- `web/lib/ebay.ts` — eBay Browse / Marketplace Insights wrapper with
-  per-(category, query) 24h cache (PLAN §8)
-- IP rate limit: 3 scans / IP / day (PLAN §8). In-memory map is fine for
-  v1; revisit if we need durability
-- Use `claude-haiku-4-5` per PLAN §1 and the identify-item prompt in
-  `docs/ai-prompts.md`
+- `web/app/scan/result/[slug]/page.tsx` — shareable read-only result page
+  served from the `price_scans` row keyed by `shareable_slug`
+- `web/app/scan/result/[slug]/opengraph-image.tsx` — dynamic OG image so
+  TikTok / link previews show the item + price tiles
+- Polish the `/scan` page after the first real run-through (mobile UX,
+  loading state, copy)
+- Post the first TikTok demo using the live tool
 
-Stop short of the shareable result page (`/scan/result/[slug]` with OG
-image generation) — that's Day 5.
+Carries over from D3-4 (blocked on creds, not code):
+- End-to-end exercise of the scan flow once `ANTHROPIC_API_KEY`,
+  `EBAY_APP_ID`, `EBAY_CERT_ID`, and `SUPABASE_SERVICE_ROLE_KEY` land in
+  `web/.env.local`. Haiku vision call is the only required path; eBay
+  failure falls back to comps=[] gracefully.
 
 ## Useful commands for starting the next session
 
@@ -81,21 +97,24 @@ git checkout main && git pull --ff-only
 
 **Already in the repo, no setup needed:**
 
-- Supabase migrations (incl. `waitlist` + `price_scans`) — `supabase/migrations/`
-- AI prompts (v1.0, identify-item, listing reformat, price guidance) — `docs/ai-prompts.md`
+- Supabase migrations (incl. `waitlist` + `price_scans` + storage buckets)
+  — `supabase/migrations/`
+- AI prompts (v1.0, identify-item, listing reformat, price guidance) —
+  `docs/ai-prompts.md`
 - Shared JSON schemas — `shared/types/`
 - eBay API integration notes — `docs/ebay-api-notes.md`
 - All env-var names — `.env.example` and `web/.env.local.example`
-- **Web scaffold + waitlist** — code written, build green, awaiting creds to run
+- **Web scaffold + waitlist + /scan** — code written, build green,
+  awaiting creds to run
 
 **Needed from user before the next session's code can RUN (not before code can be WRITTEN):**
 
 | Credential | Needed for | When |
 | --- | --- | --- |
-| Supabase project URL + anon key + service role key | Waitlist insert, `/scan` writes | **Now blocking** the existing waitlist E2E; required for `/scan` |
-| Anthropic API key (billing enabled) | Haiku vision identification | **Week 1 D3-4** (next session) |
-| eBay App ID + Cert ID (production) | Sold-comp lookup | **Week 1 D3-4** (next session); sandbox fallback documented in `docs/ebay-api-notes.md` |
-| Vercel account linked to GitHub | Deploy step | Week 1 D2 deploy (deferred); can ship next session as code-only |
+| Supabase project URL + anon key + service role key | Waitlist insert, `/scan` writes | **Now blocking** waitlist + scan E2E |
+| Anthropic API key (billing enabled) | Haiku vision + price guidance | **Now blocking** scan E2E |
+| eBay App ID + Cert ID (production) | Sold-comp lookup | Scan E2E (degrades gracefully if missing) |
+| Vercel account linked to GitHub | Deploy step | Week 1 D5 deploy |
 | Domain (`presold.app` or chosen brand) | Production URL | Anytime before launch |
 | PostHog account | Analytics | Week 1+ |
 | Sentry account | Error tracking | Week 1+ |
@@ -103,19 +122,33 @@ git checkout main && git pull --ff-only
 
 ## Open follow-ups
 
-- **Vercel deploy not yet wired.** Defer until the user links an account.
-  Once linked, a one-line `vercel.json` may be needed to pin the
-  monorepo root to `web/`.
-- **Waitlist insert not exercised against real Supabase.** Drop credentials
-  into `web/.env.local`, run `npm run dev`, submit the form, check the
-  `waitlist` table. With the Supabase MCP connector now live, the
-  migration can also be applied straight from the session.
+- **Vercel env vars set, deploy URL not yet captured here.** User added
+  the keys to Vercel during the OpenRouter switch — confirm the prod
+  deploy succeeds and add the URL to this file on the next pass.
+- **eBay credentials waiting on production approval.** Marketplace
+  Insights production access is ~5 business days. Scanner degrades to
+  `comps=[]` until then; Haiku still produces a result with low
+  confidence (`docs/ebay-api-notes.md`).
+- **Supabase security advisors flagged 4 warnings on first apply.** All
+  WARN-level, none block the scan flow:
+    1. `update_updated_at` function has mutable `search_path` — fix with
+       `alter function ... set search_path = public, pg_temp`.
+    2. `price_scans` INSERT policy `WITH CHECK (true)` — intentional per
+       data-model.md, advisor doesn't have that context.
+    3. `waitlist` INSERT policy `WITH CHECK (true)` — same, intentional.
+    4. `scan-photos` public bucket has a broad SELECT policy on
+       `storage.objects` — public URL access doesn't need it; safe to
+       drop the `scan_photos_public_read` policy. Bundle (1) and (4)
+       into a small `advisor_fixes` migration.
 - **`next lint` deprecation warning.** Next 15 prints a notice that
   `next lint` is removed in Next 16. Migrate to the ESLint CLI before
   bumping to Next 16; not urgent.
 - **Agent skills installed via `npx skills add supabase/agent-skills`.**
   Lockfile committed; `.agents/` and `.claude/skills/` are gitignored.
   Fresh clones run `npx skills install` to materialise.
+- **OpenRouter is a temporary AI gateway.** See
+  `docs/decisions/004-openrouter-temporary-ai-gateway.md`. Switch back
+  to Anthropic direct once billing is live.
 
 ## How to maintain this file
 
