@@ -41,10 +41,19 @@
 - ✅ **Supabase MCP connector** registered at project scope; agent-skills
   lockfile committed for reproducible install
 - ✅ **Price scanner** (Week 1 D3-4): `/scan` page + form, `/api/scan`
-  route, `lib/anthropic.ts` (Haiku vision + price-guidance), `lib/ebay.ts`
-  (Marketplace Insights with 24h comp cache + broaden-on-sparse query),
-  `lib/rate-limit.ts` (3/IP/day in-memory), `lib/scan.ts` orchestrator.
-  Photos land in the `scan-photos` bucket keyed by `shareable_slug`.
+  route, `lib/ai.ts` (Haiku 4.5 via OpenRouter — ADR-004),
+  `lib/ebay.ts` (Marketplace Insights with 24h comp cache +
+  broaden-on-sparse query), `lib/rate-limit.ts` (3/IP/day in-memory),
+  `lib/scan.ts` orchestrator. Photos land in the `scan-photos` bucket
+  keyed by `shareable_slug`.
+- ✅ **Supabase live**: 4 migrations applied to project
+  `yiowyehukmhkblmogwjy`. 7 tables RLS-on (users, items, photos,
+  listings, sales, price_scans, waitlist) + buckets `item-photos`
+  (private) and `scan-photos` (public). One bug fix on the sales index
+  expression along the way.
+- ✅ **AI gateway live via OpenRouter** (ADR-004): `web/.env.local`
+  populated with Supabase URL/anon/service-role + OpenRouter key. eBay
+  vars empty pending production approval (scanner degrades gracefully).
 
 ## What's next
 
@@ -113,24 +122,33 @@ git checkout main && git pull --ff-only
 
 ## Open follow-ups
 
-- **Vercel deploy not yet wired.** Defer until the user links an account.
-  Once linked, a one-line `vercel.json` may be needed to pin the
-  monorepo root to `web/`.
-- **Waitlist + /scan insert not exercised against real Supabase.** Drop
-  credentials into `web/.env.local`, run `npm run dev`, submit each
-  form. Tables to inspect after: `waitlist`, `price_scans`,
-  `scan-photos` storage bucket. With the Supabase MCP connector live,
-  spot-checks can happen from the session.
-- **eBay sandbox returns empty comp arrays.** `docs/ebay-api-notes.md`
-  flags this; production access takes ~5 business days. The orchestrator
-  degrades to `comps=[]` if the API errors, so the scan flow still ships
-  a result (Haiku will mark it low-confidence).
+- **Vercel env vars set, deploy URL not yet captured here.** User added
+  the keys to Vercel during the OpenRouter switch — confirm the prod
+  deploy succeeds and add the URL to this file on the next pass.
+- **eBay credentials waiting on production approval.** Marketplace
+  Insights production access is ~5 business days. Scanner degrades to
+  `comps=[]` until then; Haiku still produces a result with low
+  confidence (`docs/ebay-api-notes.md`).
+- **Supabase security advisors flagged 4 warnings on first apply.** All
+  WARN-level, none block the scan flow:
+    1. `update_updated_at` function has mutable `search_path` — fix with
+       `alter function ... set search_path = public, pg_temp`.
+    2. `price_scans` INSERT policy `WITH CHECK (true)` — intentional per
+       data-model.md, advisor doesn't have that context.
+    3. `waitlist` INSERT policy `WITH CHECK (true)` — same, intentional.
+    4. `scan-photos` public bucket has a broad SELECT policy on
+       `storage.objects` — public URL access doesn't need it; safe to
+       drop the `scan_photos_public_read` policy. Bundle (1) and (4)
+       into a small `advisor_fixes` migration.
 - **`next lint` deprecation warning.** Next 15 prints a notice that
   `next lint` is removed in Next 16. Migrate to the ESLint CLI before
   bumping to Next 16; not urgent.
 - **Agent skills installed via `npx skills add supabase/agent-skills`.**
   Lockfile committed; `.agents/` and `.claude/skills/` are gitignored.
   Fresh clones run `npx skills install` to materialise.
+- **OpenRouter is a temporary AI gateway.** See
+  `docs/decisions/004-openrouter-temporary-ai-gateway.md`. Switch back
+  to Anthropic direct once billing is live.
 
 ## How to maintain this file
 
