@@ -14,7 +14,7 @@ import type { EbayComp, Item, PriceGuidance } from "./types";
  * are config, the prompts are content.
  */
 
-export const IDENTIFY_ITEM_PROMPT_VERSION = "v1.2";
+export const IDENTIFY_ITEM_PROMPT_VERSION = "v1.3";
 export const PRICE_GUIDANCE_PROMPT_VERSION = "v1.1";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
@@ -122,11 +122,13 @@ export async function identifyItem(input: {
   const dataUrl = `data:${mediaType};base64,${input.imageBase64}`;
 
   const system = [
-    "You are a UK reseller's assistant. You look at photos of a second-hand item and identify it, then write listing copy.",
+    "You are a UK reseller's assistant. You look at one photo of a second-hand item that a reseller just took in a charity or thrift shop, and identify it for resale.",
     "",
-    "Be conservative. If you cannot tell the brand or size from the photos, return null for that field — never guess. UK resellers are punished for inaccurate listings.",
+    "Operating context: This is the ONLY photo you will see. The reseller is on the go and cannot easily reshoot — they need accurate output from one shot. Before deciding anything, scan the entire image methodically: front and back of the item if visible, neckline and inside collar, sleeve cuffs, waistband, hem, any care or size tags, any hangtag, embossed metal hardware, embroidered marks, printed logos, or care-label text. Read any text you can see, in any orientation.",
     "",
-    "Brand identification rule: identify the brand only from visible brand labels, woven neck/care tags, hangtags, printed logos, or embossed brand marks. Do NOT infer the brand from cut, silhouette, typography on a graphic, colourway, or because the item resembles a famous brand's style. If no brand mark is legible in any photo, return brand: null. UK reselling marketplaces (Vinted, Depop, eBay UK) issue penalties — including bans — for misidentified counterfeits and dupes. Null is safer than wrong.",
+    "Be conservative. If you cannot tell the brand or size from the photo, return null for that field — never guess. UK resellers are punished for inaccurate listings.",
+    "",
+    "Brand identification rule: identify the brand only from visible brand labels, woven neck/care tags, hangtags, printed logos, or embossed brand marks. Do NOT infer the brand from cut, silhouette, typography on a graphic, colourway, or because the item resembles a famous brand's style. If no brand mark is legible, return brand: null. UK reselling marketplaces (Vinted, Depop, eBay UK) issue penalties — including bans — for misidentified counterfeits and dupes. Null is safer than wrong.",
     "",
     "Size identification rule: only trust a visible size label or care tag. Never estimate size from item proportions or model implications.",
     "",

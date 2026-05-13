@@ -20,7 +20,9 @@ const ACTOR_ID = "caffein.dev~ebay-sold-listings"; // Apify URL form uses ~
 const APIFY_URL = `https://api.apify.com/v2/acts/${ACTOR_ID}/run-sync-get-dataset-items`;
 
 const COMP_TTL_MS = 24 * 60 * 60 * 1000;
-const MAX_RESULTS = 20;
+// 12 comps anchors a reliable price recommendation and trims Apify runtime
+// by ~30% vs. 20 — meaningful for the on-the-go charity-shop flow.
+const MAX_RESULTS = 12;
 const MIN_USEFUL_COMPS = 3;
 const ACTOR_TIMEOUT_S = 60; // Actor terminates after this even if mid-fetch
 
