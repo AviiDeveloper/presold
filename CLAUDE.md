@@ -17,9 +17,24 @@ If you have not read `PLAN.md` this session, read it now.
 2. **Resist scope drift.** If your task touches anything not in v1 scope (cross-listing automation, authentication checking, Android, non-UK platforms), stop and propose deferring.
 3. **One thing at a time.** Finish the current section of PLAN.md before starting another.
 4. **Write tests for money math only.** `PricingService` and any code that touches profit/fees/sale_price must have tests. Skip tests for UI views and prompts.
-5. **Commit messages reference the plan.** Format: `[section X.Y] short description`. Example: `[4.W2.D3] add listing review screen with platform tabs`.
+5. **Commit messages reference the plan.** Format: `[Week N] <type>: <subject>` where type ∈ {feat, fix, chore, docs, refactor, test, build, ci}. Example: `[Week 2] feat: add listing review screen with platform tabs`. One concern per commit. AI-assisted commits include `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>`. Full conventions in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 6. **When you find a decision not in the plan, write an ADR.** Place in `docs/decisions/NNN-short-name.md`. Don't make undocumented architectural calls.
 7. **Update PLAN.md in the same commit as the code change that contradicts it.** The plan and the code must always agree.
+
+## How we work in this repo (workflow guardrails)
+
+This project is public on GitHub as a portfolio piece + working business. Every change goes through a branch and a PR. No exceptions after the initial scaffold commit.
+
+- **Every session opens a feature branch and closes with a PR.** Branch name: `week-N/short-slug` (e.g. `week-1/landing-page`, `week-2/capture-flow`).
+- **The PR body IS the session log.** The template at `.github/pull_request_template.md` auto-populates the required structure: goal, PLAN.md section, what shipped, why, files touched, verification, what's next. Fill every section.
+- **Never commit directly to `main`** after the initial scaffold. Branch, push, PR, merge.
+- **Mirror merged PR descriptions into `docs/sessions/YYYY-MM-DD-NN-slug.md`** so the project history survives the platform.
+- **Before every push:** run `git status` and verify no `.env*`, no `*.xcconfig` (non-example), no `secrets.json`, no `*.pem`/`*.key`. The `.gitignore` catches these but verify.
+- **`PLAN.md` carries status markers (✅ done / 🚧 in progress / ⏳ pending).** Update them in the same PR as the code change. Plan and code must always agree.
+- **A session ends when its PR merges.** The next session opens by reading `PLAN.md` (next ⏳ item) and the last entries in `docs/sessions/`.
+- **Architectural decision not already in the plan?** Write an ADR in `docs/decisions/NNN-short-name.md` in the same PR.
+
+Full conventions: [`CONTRIBUTING.md`](./CONTRIBUTING.md). Session-log format: [`docs/sessions/README.md`](./docs/sessions/README.md).
 
 ## What v1 IS
 
