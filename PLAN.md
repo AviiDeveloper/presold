@@ -132,19 +132,19 @@ Blocked on external accounts (parallel user work, not blocking Week 1 code):
 - ⏳ PostHog account — Week 1+
 - ⏳ Sentry account — Week 1+
 
-### Week 1: Free web tool ships 🚧 (4-5 evenings)
+### Week 1: Free web tool ships ✅ (closed 2026-05-13)
 **Goal: public price scanner live, email capture working, first TikTok using it.**
 
-- ✅ D1-2: Next.js scaffold, landing page, waitlist form (Vercel deploy deferred — account not linked yet)
-- ✅ D3-4: `/scan` page, `/api/scan` route, Supabase `price_scans` table + storage, Haiku vision identification, eBay comp lookup
-- ⏳ D5: shareable result page (OG images), polish, post first TikTok
+- ✅ D1-2: Next.js scaffold, landing page, waitlist form. Live on Vercel.
+- ✅ D3-4: `/scan` page, `/api/scan` route, Supabase `price_scans` table + storage, Sonnet 4.6 vision identification (ADR-006), Apify-sourced eBay sold comps (ADR-005), OpenRouter as AI gateway (ADR-004), client-side image compression, library upload, prompt v1.3 tuned for charity-shop single-photo use, single-tier Apify (60s function ceiling fit).
+- 🚫 D5: **Descoped.** Shareable result page + OG image generation not built — the inline `/scan` result page is enough for the v1 use case. First TikTok is a marketing action, not code.
 
 **Deliverable**: live URL, working scanner, first content posted.
 
-### Week 2: iOS app skeleton + capture flow ⏳ (5-7 evenings)
+### Week 2: iOS app skeleton + capture flow 🚧 (5-7 evenings)
 **Goal: capture an item end-to-end on TestFlight.**
 
-- D1-2: Xcode scaffold, Supabase Swift client, magic-link auth, tab bar
+- D1-2: Xcode scaffold (requires user to create `PreSold.xcodeproj` in Xcode — see `docs/sessions/NEXT_SESSION.md` for the bootstrap recipe), Supabase Swift client, magic-link auth, tab bar
 - D3-4: Capture flow (multi-photo capture, upload), `identify-item` edge function, listing display
 - D5-7: Listing review screen (Vinted/Depop/eBay tabs), copy-to-clipboard, inventory list, persistence
 
