@@ -3,6 +3,12 @@ import { runScan, type ScanError } from "@/lib/scan";
 
 export const runtime = "nodejs";
 
+// Full scan = Haiku vision (~5s) + Apify cold-start (up to ~25s) + price
+// guidance (~2s) + storage upload + DB insert. Easily blows past Vercel's
+// default 10s function timeout on Hobby. Lift to 60s — still well under
+// the Hobby plan ceiling.
+export const maxDuration = 60;
+
 function status(error: ScanError): number {
   switch (error.code) {
     case "rate_limited":
