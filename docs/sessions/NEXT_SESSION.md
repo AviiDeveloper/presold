@@ -9,11 +9,12 @@
 
 ## Snapshot
 
-- **Last updated:** 2026-05-13, after the `week-1/scan-flow` PR
-- **Last merged PR:** #4 (`chore/agent-skills` → `main` at `212da63`)
-- **In flight:** `week-1/scan-flow` — `/scan` price scanner end-to-end (Haiku vision + eBay comps + price guidance + public `price_scans` row)
+- **Last updated:** 2026-05-13, after the `week-1/close-out` PR
+- **Last merged PR:** #12 (`hotfix/apify-single-tier` → `main` at `06439b8`)
+- **In flight:** `week-1/close-out` — docs hygiene + Week 2 bootstrap recipe
 - **Repo:** https://github.com/AviiDeveloper/presold (public)
-- **Current PLAN.md state:** Week 0 ✅ closed · Week 1 🚧 (D1-2 ✅, D3-4 ✅, D5 ⏳)
+- **Production URL:** https://presold-three.vercel.app (Vercel auto alias)
+- **Current PLAN.md state:** Week 0 ✅ · Week 1 ✅ (D5 shareable descoped) · Week 2 🚧
 
 ## Read these first, in order
 
@@ -24,131 +25,123 @@
 5. The most recent merged session log in this folder — what was done last
 6. **This file** — current live state + immediate next step
 
-## What's done
+## What's done (cumulative through end of Week 1)
 
-- ✅ Scaffold generated from `bootstrap.sh`, project renamed to PreSold
-- ✅ Public GitHub repo created
-- ✅ Repo discipline live: All Rights Reserved licence, branch+PR workflow,
-  mandatory PR template, session-log convention, status markers in `PLAN.md`
-- ✅ Initial scaffold commit + first meta-PR (PR #1) merged
-- ✅ **Web scaffold** (Week 1 D1-2): Next.js 15 App Router, Tailwind v4,
-  Inter via `next/font`, monochrome design tokens
-- ✅ **Landing page** at `/` — hero, three-step how-it-works, problem
-  section, dry copy per PLAN §10
-- ✅ **Waitlist** end-to-end (no creds yet): form (server action +
-  client component), API route, shared `lib/waitlist.ts` helper,
-  `waitlist` table migration + RLS, `data-model.md` updated
-- ✅ **Supabase MCP connector** registered at project scope; agent-skills
-  lockfile committed for reproducible install
-- ✅ **Price scanner** (Week 1 D3-4): `/scan` page + form, `/api/scan`
-  route, `lib/ai.ts` (Haiku 4.5 via OpenRouter — ADR-004),
-  `lib/ebay.ts` (Marketplace Insights with 24h comp cache +
-  broaden-on-sparse query), `lib/rate-limit.ts` (3/IP/day in-memory),
-  `lib/scan.ts` orchestrator. Photos land in the `scan-photos` bucket
-  keyed by `shareable_slug`.
+### Week 0
+- ✅ Repo scaffold, public on GitHub, branch+PR workflow, session-log convention.
+
+### Week 1 — full free web scanner shipped
+- ✅ **Marketing**: landing page at `/`, waitlist form (server action + API
+  route), `waitlist` table + RLS. Live.
+- ✅ **Scanner**: `/scan` page + form, `/api/scan` route, full pipeline:
+  client-side image compress → Sonnet vision (Prompt 1 v1.3) → Apify
+  eBay sold comps → Sonnet price guidance (Prompt 3 v1.1) → public
+  `price_scans` row + photo in `scan-photos` bucket.
 - ✅ **Supabase live**: 4 migrations applied to project
-  `yiowyehukmhkblmogwjy`. 7 tables RLS-on (users, items, photos,
-  listings, sales, price_scans, waitlist) + buckets `item-photos`
-  (private) and `scan-photos` (public). One bug fix on the sales index
-  expression along the way.
-- ✅ **AI gateway live via OpenRouter** (ADR-004): `web/.env.local`
-  populated with Supabase URL/anon/service-role + OpenRouter key. eBay
-  vars empty pending production approval (scanner degrades gracefully).
+  `yiowyehukmhkblmogwjy`. 7 tables RLS-on. Both storage buckets created.
+- ✅ **AI gateway via OpenRouter** (ADR-004) using
+  `anthropic/claude-sonnet-4-6` (bumped from Haiku per ADR-006 after
+  live testing showed Haiku unreliable at label OCR).
+- ✅ **eBay sold comps via Apify** (ADR-005) using
+  `caffein.dev/ebay-sold-listings`. Single-tier query (broaden-on-sparse
+  removed in PR #12 — sequential tiers exceeded Vercel's 60s ceiling).
+- ✅ **Vercel deployed**: env vars wired (Supabase, OpenRouter, Apify).
+  Production scanner live. Tested end-to-end on phone — YSL jacket
+  correctly identified, comps returned, price tiles rendered.
+- 🚫 **D5 shareable result page + OG image**: descoped. Inline result
+  view on `/scan` is sufficient for v1.
 
 ## What's next
 
-**Next branch:** `week-1/scan-result`
+**Next branch:** `week-2/ios-scaffold`
 
-**Scope of next session (PLAN.md §4, Week 1 Day 5):**
+**Scope of next session (PLAN.md §4, Week 2 Day 1-2):**
 
-- `web/app/scan/result/[slug]/page.tsx` — shareable read-only result page
-  served from the `price_scans` row keyed by `shareable_slug`
-- `web/app/scan/result/[slug]/opengraph-image.tsx` — dynamic OG image so
-  TikTok / link previews show the item + price tiles
-- Polish the `/scan` page after the first real run-through (mobile UX,
-  loading state, copy)
-- Post the first TikTok demo using the live tool
+The actual `.xcodeproj` has to be created in Xcode — Claude Code can't
+generate a working Xcode project file from chat reliably. The bootstrap
+recipe:
 
-Carries over from D3-4 (blocked on creds, not code):
-- End-to-end exercise of the scan flow once `ANTHROPIC_API_KEY`,
-  `EBAY_APP_ID`, `EBAY_CERT_ID`, and `SUPABASE_SERVICE_ROLE_KEY` land in
-  `web/.env.local`. Haiku vision call is the only required path; eBay
-  failure falls back to comps=[] gracefully.
+1. Open Xcode → File → New → Project → iOS → App.
+2. Product Name: `PreSold`. Interface: SwiftUI. Language: Swift.
+   Storage: None. Tests: tick "Include Tests".
+3. Save the project so the resulting `PreSold/` folder ends up at
+   `/Users/Avii/Desktop/PreSold/ios/PreSold/`. The existing
+   `ios/PreSold/Config/` directory will be left alongside.
+4. Set deployment target to **iOS 17.0** in the project's General tab.
+5. Add Swift package `https://github.com/supabase/supabase-swift`
+   (Branch: main) via File → Add Package Dependencies.
+6. Commit just the new `.xcodeproj` and the auto-generated
+   `ContentView.swift` / `PreSoldApp.swift` on a fresh branch
+   `week-2/ios-scaffold`.
+7. Then Claude can write the Models, Services, Views, etc. into the
+   project (you drag them into Xcode once, then they're tracked).
+
+After the project file exists, Week 2 D1-2 work per `ios/CLAUDE.md`:
+- `Models/` — `Item`, `Photo`, `Listing`, `Sale`, `PriceScan` Codable
+  structs matching `shared/types/*.schema.json`
+- `Services/SupabaseClient.swift` — singleton, magic-link auth
+- `Services/AIService.swift` — proxies through Supabase edge function
+  (not direct to OpenRouter)
+- `Views/RootTabView.swift` — tab bar shell (Capture / Inventory /
+  Profile)
+- `Views/Auth/SignInView.swift` — magic-link entry
 
 ## Useful commands for starting the next session
 
 ```sh
 git checkout main && git pull --ff-only
-git checkout -b week-1/scan-flow
-cd web
-npm install                            # if dependencies have changed
-cp .env.local.example .env.local       # fill ANTHROPIC + EBAY + SUPABASE
-npm run dev                            # http://localhost:3000
-# do the work
-git status                              # confirm no secrets staged
-git add <files> && git commit -m "[Week 1] feat: ..."
-git push -u origin week-1/scan-flow
-gh pr create                            # template auto-fills the session-log structure
-gh pr merge --merge --delete-branch     # preserve commit history; do NOT squash
-git checkout main && git pull --ff-only
+# After you create the xcodeproj in Xcode at ios/PreSold/PreSold.xcodeproj:
+git checkout -b week-2/ios-scaffold
+git add ios/PreSold/PreSold.xcodeproj ios/PreSold/PreSold/
+git commit -m "[Week 2] feat: scaffold SwiftUI project in Xcode"
+# Then Claude writes the Models/Services/Views, drag-in to Xcode, commit again
 ```
 
 ## Prerequisites
 
 **Already in the repo, no setup needed:**
 
-- Supabase migrations (incl. `waitlist` + `price_scans` + storage buckets)
-  — `supabase/migrations/`
-- AI prompts (v1.0, identify-item, listing reformat, price guidance) —
-  `docs/ai-prompts.md`
-- Shared JSON schemas — `shared/types/`
-- eBay API integration notes — `docs/ebay-api-notes.md`
-- All env-var names — `.env.example` and `web/.env.local.example`
-- **Web scaffold + waitlist + /scan** — code written, build green,
-  awaiting creds to run
+- Supabase migrations applied, schema live, buckets created
+- AI prompts (v1.3, identify-item; v1.1 listing-reformat + price-guidance)
+- Shared JSON schemas in `shared/types/`
+- Web scanner production-deployed
+- 6 ADRs documenting deferred features + temporary infra choices
 
-**Needed from user before the next session's code can RUN (not before code can be WRITTEN):**
+**Needed from user before Week 2 code can RUN:**
 
-| Credential | Needed for | When |
+| Credential / Tool | Needed for | Status |
 | --- | --- | --- |
-| Supabase project URL + anon key + service role key | Waitlist insert, `/scan` writes | **Now blocking** waitlist + scan E2E |
-| Anthropic API key (billing enabled) | Haiku vision + price guidance | **Now blocking** scan E2E |
-| eBay App ID + Cert ID (production) | Sold-comp lookup | Scan E2E (degrades gracefully if missing) |
-| Vercel account linked to GitHub | Deploy step | Week 1 D5 deploy |
-| Domain (`presold.app` or chosen brand) | Production URL | Anytime before launch |
-| PostHog account | Analytics | Week 1+ |
-| Sentry account | Error tracking | Week 1+ |
-| Apple Developer account (£79/yr, 2-3 days) | TestFlight | Week 4 |
+| Xcode 15+ | Project creation, all iOS work | Should already be installed |
+| Apple Developer account (£79/yr, 2-3 days) | TestFlight (Week 4) | ⏳ Apply mid-Week 2 |
+| Real iPhone | Camera testing | ✅ (used for web scanner tests) |
+
+**Carried over from Week 1, no longer blocking:**
+
+- Anthropic direct API key (deferred — OpenRouter covers us, ADR-004)
+- eBay Developer API keys (deferred — Apify covers us, ADR-005)
+- Real reseller test set of 50 items (PLAN §11 DoD — start collecting now)
 
 ## Open follow-ups
 
-- **Vercel env vars set, deploy URL not yet captured here.** User added
-  the keys to Vercel during the OpenRouter switch — confirm the prod
-  deploy succeeds and add the URL to this file on the next pass.
-- **eBay credentials waiting on production approval.** Marketplace
-  Insights production access is ~5 business days. Scanner degrades to
-  `comps=[]` until then; Haiku still produces a result with low
-  confidence (`docs/ebay-api-notes.md`).
-- **Supabase security advisors flagged 4 warnings on first apply.** All
-  WARN-level, none block the scan flow:
-    1. `update_updated_at` function has mutable `search_path` — fix with
-       `alter function ... set search_path = public, pg_temp`.
-    2. `price_scans` INSERT policy `WITH CHECK (true)` — intentional per
-       data-model.md, advisor doesn't have that context.
-    3. `waitlist` INSERT policy `WITH CHECK (true)` — same, intentional.
-    4. `scan-photos` public bucket has a broad SELECT policy on
-       `storage.objects` — public URL access doesn't need it; safe to
-       drop the `scan_photos_public_read` policy. Bundle (1) and (4)
-       into a small `advisor_fixes` migration.
-- **`next lint` deprecation warning.** Next 15 prints a notice that
-  `next lint` is removed in Next 16. Migrate to the ESLint CLI before
-  bumping to Next 16; not urgent.
-- **Agent skills installed via `npx skills add supabase/agent-skills`.**
-  Lockfile committed; `.agents/` and `.claude/skills/` are gitignored.
-  Fresh clones run `npx skills install` to materialise.
-- **OpenRouter is a temporary AI gateway.** See
-  `docs/decisions/004-openrouter-temporary-ai-gateway.md`. Switch back
-  to Anthropic direct once billing is live.
+- **Supabase advisor warnings** (4 from initial schema apply): function
+  `update_updated_at` search_path mutability + `scan-photos` broad
+  SELECT policy. Bundle into a small `advisor_fixes` migration. Non-
+  blocking.
+- **Vercel deploy URL not yet on a custom domain.** Currently
+  `presold-three.vercel.app`. When the domain lands, update
+  `web/app/layout.tsx` `metadataBase` and OpenRouter `HTTP-Referer`
+  header in `web/lib/ai.ts`.
+- **`next lint` deprecation** in Next 15 → removed in Next 16. Migrate
+  to the ESLint CLI before bumping.
+- **AI accuracy test set.** PLAN §11 DoD requires ≥75% on 50 real
+  reseller items. Start a `docs/test-items/` folder with photos and
+  expected outputs.
+- **OpenRouter still temporary** (ADR-004) — switch back to Anthropic
+  direct when billing is enabled.
+- **Apify still temporary** (ADR-005) — switch back to eBay Marketplace
+  Insights when production approval lands.
+- **Sonnet still upgrade** (ADR-006) — drop back to Haiku if accuracy
+  holds at the DoD bar.
 
 ## How to maintain this file
 
