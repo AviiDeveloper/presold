@@ -6,7 +6,7 @@ import {
   PRICE_GUIDANCE_PROMPT_VERSION,
   identifyItem,
   suggestPrice,
-} from "./anthropic";
+} from "./ai";
 import { fetchSoldComps } from "./ebay";
 import { takeScanSlot } from "./rate-limit";
 import type { EbayComp, Item, PriceGuidance } from "./types";
