@@ -35,8 +35,8 @@ function assertImageType(mimeType: string): string {
 }
 
 function apiKey(): string {
-  const key = process.env.OPENROUTER_API_KEY;
-  if (!key) throw new Error("Missing OPENROUTER_API_KEY");
+  const key = process.env.OPEN_ROUTER_API_KEY;
+  if (!key) throw new Error("Missing OPEN_ROUTER_API_KEY");
   return key;
 }
 

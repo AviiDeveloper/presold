@@ -17,7 +17,7 @@ OpenAI-compatible `/api/v1/chat/completions` endpoint. Removed
 `@anthropic-ai/sdk` from `web/package.json`; the AI client (`web/lib/ai.ts`)
 uses plain `fetch` against OpenRouter.
 
-Env var: `OPENROUTER_API_KEY` (server-side only). Model identifier stays as
+Env var: `OPEN_ROUTER_API_KEY` (server-side only). Model identifier stays as
 Haiku 4.5.
 
 ## Switch-back trigger
@@ -32,7 +32,7 @@ Switch to **Anthropic direct** when:
 The switch is a small refactor: re-introduce `@anthropic-ai/sdk`, replace the
 `chat()` fetch helper in `web/lib/ai.ts` with the SDK's `messages.create()`,
 swap `image_url` content blocks back to Anthropic's `image` blocks, drop the
-`OPENROUTER_API_KEY` env in favour of `ANTHROPIC_API_KEY`. Prompt content
+`OPEN_ROUTER_API_KEY` env in favour of `ANTHROPIC_API_KEY`. Prompt content
 stays identical because we maintained the prompt text + version stamps.
 
 ## Alternatives considered
