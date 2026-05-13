@@ -138,7 +138,7 @@ export function ScanForm() {
           className="block w-full rounded-md border border-(--color-border) bg-background p-3 text-sm file:mr-3 file:rounded file:border-0 file:bg-foreground file:px-3 file:py-1.5 file:text-background"
         />
         <span className="text-xs text-(--color-muted-foreground)">
-          Take a photo or pick one from your library. Front of the item, good light, neutral background.
+          One snap of the item — include any visible brand label or size tag in the frame. Good light helps.
         </span>
       </label>
 
@@ -156,18 +156,21 @@ export function ScanForm() {
 
       <label className="flex flex-col gap-2">
         <span className="text-sm font-medium">
-          Category hint{" "}
+          What is it?{" "}
           <span className="font-normal text-(--color-muted-foreground)">
-            (optional)
+            (optional, but helps a lot)
           </span>
         </span>
         <input
           type="text"
           name="category_hint"
           maxLength={120}
-          placeholder="e.g. men's trainers, vintage band tee"
+          placeholder="e.g. Nike trainers, vintage Burberry coat, Ralph Lauren shirt"
           className="rounded-md border border-(--color-border) bg-background px-4 py-3 text-sm placeholder:text-(--color-muted-foreground) focus:border-foreground focus:outline-none"
         />
+        <span className="text-xs text-(--color-muted-foreground)">
+          If you can read the brand or size on the tag, type it here — the AI uses it as a head start.
+        </span>
       </label>
 
       <button
