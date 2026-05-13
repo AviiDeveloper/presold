@@ -6,9 +6,9 @@ Next.js 15 app for marketing site and free price scanner.
 
 ```bash
 cd web
-pnpm install
+npm install
 cp .env.local.example .env.local   # fill in values
-pnpm dev
+npm run dev
 ```
 
 ## What it is
