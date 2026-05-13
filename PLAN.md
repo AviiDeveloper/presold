@@ -136,7 +136,7 @@ Blocked on external accounts (parallel user work, not blocking Week 1 code):
 **Goal: public price scanner live, email capture working, first TikTok using it.**
 
 - ✅ D1-2: Next.js scaffold, landing page, waitlist form (Vercel deploy deferred — account not linked yet)
-- ⏳ D3-4: `/scan` page, `/api/scan` route, Supabase `price_scans` table + storage, Haiku vision identification, eBay comp lookup
+- ✅ D3-4: `/scan` page, `/api/scan` route, Supabase `price_scans` table + storage, Haiku vision identification, eBay comp lookup
 - ⏳ D5: shareable result page (OG images), polish, post first TikTok
 
 **Deliverable**: live URL, working scanner, first content posted.
