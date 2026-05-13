@@ -23,7 +23,6 @@ const COMP_TTL_MS = 24 * 60 * 60 * 1000;
 // 12 comps anchors a reliable price recommendation and trims Apify runtime
 // by ~30% vs. 20 — meaningful for the on-the-go charity-shop flow.
 const MAX_RESULTS = 12;
-const MIN_USEFUL_COMPS = 3;
 const ACTOR_TIMEOUT_S = 60; // Actor terminates after this even if mid-fetch
 
 type ApifyItem = {
@@ -110,33 +109,22 @@ export async function fetchSoldCompsViaApify(item: Item): Promise<EbayComp[]> {
   const token = apifyToken();
   if (!token) return [];
 
-  const tiers: Array<{ dropSize: boolean; dropBrand: boolean }> = [
-    { dropSize: false, dropBrand: false },
-    { dropSize: true, dropBrand: false },
-    { dropSize: true, dropBrand: true },
-  ];
+  // Single-tier query. Broaden-on-sparse used to drop size/brand and retry,
+  // but each Apify run is 30s+ on cold start — three sequential tiers blew
+  // Vercel's 60s function ceiling and the request returned no body. The
+  // price-guidance prompt already handles sparse comps as "low confidence"
+  // and recommends `null` prices, so a single honest query beats a stack of
+  // broadening retries that timeout before any of them write to the DB.
+  const keyword = buildKeyword(item, { dropSize: false, dropBrand: false });
+  if (!keyword) return [];
 
-  let best: EbayComp[] = [];
-  for (const tier of tiers) {
-    const keyword = buildKeyword(item, tier);
-    if (!keyword) continue;
+  const key = cacheKey(keyword);
+  const cached = compCache.get(key);
+  if (cached && cached.expiresAt > Date.now()) return cached.comps;
 
-    const key = cacheKey(keyword);
-    const cached = compCache.get(key);
-    if (cached && cached.expiresAt > Date.now()) {
-      best = cached.comps;
-    } else {
-      const comps = await runActor(keyword, token);
-      if (comps === null) continue;
-      compCache.set(key, {
-        comps,
-        expiresAt: Date.now() + COMP_TTL_MS,
-      });
-      best = comps;
-    }
+  const comps = await runActor(keyword, token);
+  if (comps === null) return [];
 
-    if (best.length >= MIN_USEFUL_COMPS) return best;
-  }
-
-  return best;
+  compCache.set(key, { comps, expiresAt: Date.now() + COMP_TTL_MS });
+  return comps;
 }
