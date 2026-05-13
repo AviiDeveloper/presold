@@ -48,6 +48,11 @@ secrets.json
 
 # Claude Code
 .claude/cache/
+.claude/skills/
+
+# Agent skills (installed via `npx skills add ...`; lockfile is committed,
+# the materialised skill content is per-machine and reinstallable)
+.agents/
 
 # Transient handover notes (mid-session restart bridges, never committed)
 RESTART_HANDOVER.md
